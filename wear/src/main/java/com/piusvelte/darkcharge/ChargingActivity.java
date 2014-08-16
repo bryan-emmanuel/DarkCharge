@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.piusvelte.darkcharge.utils.DataHelper;
+
 /**
  * Created by bemmanuel on 8/10/14.
  */
-public class ChargingActivity extends Activity {
+public class ChargingActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Nullable
     private static Activity mActivity;
@@ -55,7 +57,14 @@ public class ChargingActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        DataHelper.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     protected void onPause() {
+        DataHelper.getSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         // this should always finish, so if it isn't, it's because the activity is being backgrounded
         if (!isFinishing()) start(getApplicationContext());
         super.onPause();
@@ -74,11 +83,16 @@ public class ChargingActivity extends Activity {
 
     public static void start(Context context) {
         // start the blank activity if enabled
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.PREFS_NAME, SettingsActivity.MODE_PRIVATE);
-
-        if (sharedPreferences.getBoolean(SettingsActivity.PREF_ENABLED, true)) {
+        if (DataHelper.isEnabled(context)) {
             context.startActivity(new Intent(context, ChargingActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (DataHelper.PREF_ENABLED.equals(key) && !DataHelper.isEnabled(sharedPreferences)) {
+            finish();
         }
     }
 }
