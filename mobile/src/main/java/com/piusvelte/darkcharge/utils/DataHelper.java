@@ -42,8 +42,11 @@ public class DataHelper {
         dataMapRequest.getDataMap().putBoolean(PREF_ENABLED, isEnabled);
         PutDataRequest request = dataMapRequest.asPutDataRequest();
 
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
-
+        GoogleApiClient googleApiClient = new GoogleApiClient
+                .Builder(context)
+                .addApi(Wearable.API)
+                .build();
+        googleApiClient.connect();
         PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
                 .putDataItem(googleApiClient, request);
     }

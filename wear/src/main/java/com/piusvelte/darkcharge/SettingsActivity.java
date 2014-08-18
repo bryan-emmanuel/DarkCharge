@@ -40,7 +40,6 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
                 boolean isEnabled = ((CheckBox) v).isChecked();
                 DataHelper.setEnabled(mSharedPreferences, isEnabled);
                 DataHelper.syncEnabled(v.getContext(), isEnabled);
-                finish();
             }
         });
     }

@@ -25,3 +25,8 @@ dependencies {
     compile 'com.google.android.support:wearable:+'
     compile 'com.google.android.gms:play-services-wearable:+'
 }
+
+def signing = System.properties['user.home'] + '/.signing/signing.gradle';
+if (new File(signing).exists()) {
+    apply from: signing
+}
